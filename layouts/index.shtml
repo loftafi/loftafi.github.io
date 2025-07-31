@@ -33,7 +33,7 @@
 
 		.title {
 			font-size: 4rem;
-			margin-top: 1rem;
+			margin-top: 2rem;
 		}
 
 		.subtitle {
@@ -43,9 +43,7 @@
 		.tagline {
 			font-size: 1rem;
 			font-style: italic;
-			border-top: 1px solid #ccc;
-			border-bottom: 1px solid #ccc;
-			padding: 2px 5px;
+			padding: 0.5rem 0 2rem 0;
 			text-align: center;
 		}
 
@@ -66,9 +64,6 @@
 </head>
 <div id="content">
   <h1 class="centered title">Loftafi</h1>
-  <h2 class="centered subtitle">Random coding related thoughts</h2>
-  <p class="centered tagline">
-    Zig, Rust, Go.
-  </p>
+  <p class="centered tagline">Random coding related thoughts</p>
   <div id="page" :html="$page.content()"></div>
 </div>

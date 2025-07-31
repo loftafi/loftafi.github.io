@@ -1,0 +1,62 @@
+---
+.title = "How to reliably game state",
+.date = @date("2020-01-09T00:00:00"),
+.author = "Jay Rhoden",
+.layout = "index.shtml",
+.draft = false,
+.tags = ["games", "save"],
+---
+
+## How to reliably save game state?
+
+How do you safely and reliably save your game state? Assume you are saving
+information about a players scores, achievements, backpack contents in some
+kind of `struct` or Godot `Node` you will write a `deserialize()` function
+to output the contents in json, binary, or plain text. 
+
+```zig
+pub const GameState = struct {
+    score: u64,
+    achievements: ArrayList(Achievement),
+
+    // Convert the game state to a data string
+    pub fn deserialize(state:*GameState) []const u8 { ... }
+
+    // Save the data string to disk
+    pub fn save(state: *const GameState) !void { ... }
+}
+pub const save_filename = "game.dat";
+```
+
+Avoid directly overwriting the existing save game file with the new file. Why?
+What happens if your device looses power while the file is being overwritten?
+You may end up with an incomplete or unusable data file, especially if
+you are using json which requires correct closure with a `]` or `}`.
+
+Write the game state to a temporary file such as `game.json.202302050150` and
+upon success you then replace the original `game.json` file. For example
+(using zig):
+
+```zig
+/// Save the game state
+pub fn save(state: *const GameState, gpa: std.mem.Allocator) !void {
+    // Add the current time to the save filename
+    const temp_name = try std.fmt.allocPrint(gpa, "{s}.{d}", .{
+        save_filename,
+        std.time.milliTimestamp(),
+    });
+    defer gpa.free(temp_name);
+
+    const data = state.deserialize();
+    var file = try std.fs.cwd().createFile(temp_name, .{});
+    defer file.close();
+    _ = file.write(data) catch {
+        return;
+    };
+
+    try std.fs.cwd().rename(temp_name, save_filename);
+}
+
+```
+
+
