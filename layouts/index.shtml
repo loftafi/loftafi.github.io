@@ -59,7 +59,12 @@
 		.get-started a:hover {
 			background-color: white;
 		}
-
+    #page {
+	border: 2px solid black;
+	border-radius: 1rem;
+	padding: 1rem;
+	background: rgb(255, 253, 245);
+    }
   </style>
 </head>
 <div id="content">
