@@ -1,0 +1,19 @@
+---
+.title = "Home",
+.date = @date("2020-01-09T00:00:00"),
+.author = "Jay Rhoden",
+.layout = "index.shtml",
+.draft = false,
+.tags = ["loftafi", "zig", "rust"],
+---
+
+I'm a developer living in Australia. Lately my free time is spent
+exploring the [Zig](https://ziglang.org) programming language and
+development of [Scripturial](https://scripturial.com/) in Godot and
+[Lexica](https://github.com/loftafi/lexica) in SDL3.
+
+This site is a simple [log](/log) of things I am currently learning and/or
+wanting to refer back to later.
+
+
+

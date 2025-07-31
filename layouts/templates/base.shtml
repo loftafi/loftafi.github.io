@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head id="head">
+    <meta charset="UTF-8">
+    <meta name="description" content="Loftafi">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@loftafi">
+    <meta name="twitter:author" content="@loftafi">
+    <meta name="twitter:description" content="Loftafi">
+    <meta name="twitter:title" content="$page.title.suffix(' | Loftafi')">
+    <meta name="twitter:image" content="$site.host_url.addPath($site.asset('preview.png').link())">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="$page.title.suffix(' | Loftafi')">
+    <meta property="og:image" content="$site.host_url.addPath($site.asset('preview.png').link())">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, shrink-to-fit=no">
+    <title id="title">
+      <super>
+      - Loftafi
+    </title>
+    <link rel="stylesheet" type="text/css" href="$site.asset('fonts.css').link()">
+    <link rel="stylesheet" type="text/css" href="$site.asset('fira_code.css').link()">
+    <link rel="stylesheet" type="text/css" href="$site.asset('style.css').link()">
+    <link rel="stylesheet" type="text/css" href="$site.asset('highlight.css').link()">
+    <super>
+  </head>
+  <body>
+    <nav id="menu" class="centered">
+      <a href="/">Home</a>
+      •
+      <a href="$site.page('log').link()">Devlog</a>
+      •
+      <a href="https://github.com/loftafi/" target="_blank">
+        Github
+      </a>
+    </nav>
+    <div id="content">
+      <super>
+    </div>
+  </body>
+</html>

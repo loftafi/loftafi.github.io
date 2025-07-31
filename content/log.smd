@@ -1,0 +1,42 @@
+---
+.title = "Devlog",
+.date = @date("2021-07-06T00:00:00"),
+.author = "Jay Rhoden",
+.layout = "log.shtml",
+.alternatives = [{
+  .name = "rss",
+  .layout = "log.xml",
+  .output = "/log/index.xml",
+}],
+.draft = false,
+--- 
+
+[]($section.id('about'))
+## How does an LSP Work?
+This is a non-exhaustive, curated list of changes meant to help users quickly see what has improved since they last checked.
+
+
+[]($section.id('v0.11.0').data('date','2025-07-24'))
+This release brings minor backwards compatibility breakage and a few good bug
+fixes.
+
+Create a `zine.ziggy` file in your website's root directory. Every option
+   your original build.zig can be ported over except `build_assets` (but
+   ```ziggy
+   Site {
+      .title = "Static Site Generator",
+.host_url = "https://example.com:w
+",
+      .content_dir_path = "content",
+      .layouts_dir_path = "layouts",
+      .assets_dir_path = "assets",
+      .static_assets = [
+         // omitted for brevity
+      ],
+   }
+   ```
+
+[RSS]($link.alternative("rss"))
+
+
+
