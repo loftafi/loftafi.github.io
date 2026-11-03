@@ -184,9 +184,9 @@ recalculating the &lt;code&gt;hash&lt;/code&gt; of each block:&lt;/p&gt;
 &lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;    return&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; true&lt;/span&gt;&lt;span&gt;;&lt;/span&gt;&lt;/span&gt;
 &lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;div class=&quot;addendum&quot;&gt;
 &lt;p class=&quot;addendum-eyebrow&quot;&gt;Added — November 2026&lt;/p&gt;
-A complete working zig example, including addtional blockchain `load`
-and `save` example functions
-is [available on github](https://github.com/loftafi/blockchain).
+&lt;p&gt;A complete working zig example, including addtional blockchain &lt;code&gt;load&lt;/code&gt;
+and &lt;code&gt;save&lt;/code&gt; example functions
+is &lt;a rel=&quot;external&quot; href=&quot;https://github.com/loftafi/blockchain&quot;&gt;available on github&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div class=&quot;footnote-definition&quot; id=&quot;1&quot;&gt;&lt;sup class=&quot;footnote-definition-label&quot;&gt;1&lt;/sup&gt;
 &lt;p&gt;&lt;a rel=&quot;external&quot; href=&quot;https://chainscorelabs.com/differences/layer-1-ecosystem-design/wallet-and-key-management-standards/ethereums-keccak256-vs-bitcoins-sha-256-hashing-differences&quot;&gt;Ethereum&#39;s keccak256 vs Bitcoin&#39;s SHA-256&lt;/a&gt;&lt;/p&gt;

@@ -200,9 +200,11 @@ pub fn validate(self: *Blockchain) bool {
 
 <div class="addendum">
 <p class="addendum-eyebrow">Added — November 2026</p>
+
 A complete working zig example, including addtional blockchain `load`
 and `save` example functions
 is [available on github](https://github.com/loftafi/blockchain).
+
 </div>
 
 [^1]: [Ethereum's keccak256 vs Bitcoin's SHA-256](https://chainscorelabs.com/differences/layer-1-ecosystem-design/wallet-and-key-management-standards/ethereums-keccak256-vs-bitcoins-sha-256-hashing-differences)
