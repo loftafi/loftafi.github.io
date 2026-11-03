@@ -1,0 +1,58 @@
+/* Shared TUI palette for visualiser iframes.
+ *
+ * Include from a visualiser HTML:
+ *   <link rel="stylesheet" href="/visualizers/_shared/viz-tui.css">
+ *
+ * Only activates when the frame's <html> gets data-skin="tui" (posted by
+ * the parent via viz-embed.js + viz-frame.js). Base variables set here;
+ * each visualiser is free to add its own semantic aliases downstream
+ * (e.g. --s0: var(--danger); --go: var(--mark);).
+ *
+ * Every visualiser is expected to already define these variables for its
+ * default and dark modes. This file only overrides them when data-skin
+ * is set — nothing to opt into on the parent side beyond loading the
+ * file. Palette is kept in sync with themes/zola-quiet/static/style-tui.css
+ * so the frame reads as part of the page, not a foreign inset.
+ */
+
+:root[data-skin="tui"] {
+  --bg: #f0eee6;
+  --panel: #e6e2d5;
+  --panel-2: #dcd8ca;
+  --line: #4c4c4c;
+  --text: #1c1c1c;
+  --muted: #6c6c6c;
+  --mark: #a86f27;
+  --read: #a86f27;
+  --match: #4d803a;
+  --danger: #b0552c;
+  --disp: var(--mono);
+}
+
+:root[data-skin="tui"][data-theme="dark"] {
+  --bg: #0f0f10;
+  --panel: #17171a;
+  --panel-2: #1d1d21;
+  --line: #4c4c4c;
+  --text: #c5c8c6;
+  --muted: #767676;
+  --mark: #e5c07b;
+  --read: #e5c07b;
+  --match: #a8cc8c;
+  --danger: #e88a6b;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-skin="tui"]:not([data-theme]) {
+    --bg: #0f0f10;
+    --panel: #17171a;
+    --panel-2: #1d1d21;
+    --line: #4c4c4c;
+    --text: #c5c8c6;
+    --muted: #767676;
+    --mark: #e5c07b;
+    --read: #e5c07b;
+    --match: #a8cc8c;
+    --danger: #e88a6b;
+  }
+}

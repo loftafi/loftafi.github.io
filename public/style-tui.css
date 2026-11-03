@@ -1,0 +1,595 @@
+/* ---------------------------------------------------------------------
+   style-tui.css — text-user-interface skin.
+
+   Monospace throughout, character-cell layout, ASCII-drawn article
+   frames, fixed status bar at the bottom, ncurses/htop-flavoured
+   chrome. Purely visual — the status bar doesn't wire up any keys.
+
+   Enabled by setting data-skin="tui" via the skin toggle in base.html.
+   --------------------------------------------------------------------- */
+
+:root {
+  /* light TUI: paper feel, low chroma */
+  --fg: #1c1c1c;
+  --fg-dim: #6c6c6c;
+  --bg: #f0eee6;
+  --panel: #e6e2d5;
+  --code-bg: #ebe4c9;     /* parchment; distinct from --panel */
+  --accent: #4d803a;      /* muted green */
+  --accent-alt: #a86f27;  /* amber / warning */
+  --border: #4c4c4c;
+  --reverse-fg: #f0eee6;
+  --reverse-bg: #1c1c1c;
+}
+
+:root[data-theme="dark"] {
+  /* dark TUI: near-black bg, soft ANSI accents */
+  --fg: #c5c8c6;
+  --fg-dim: #767676;
+  --bg: #0f0f10;
+  --panel: #17171a;
+  --code-bg: #1a1611;     /* warmer near-black; distinct from --panel */
+  --accent: #a8cc8c;
+  --accent-alt: #e5c07b;
+  --border: #4c4c4c;
+  --reverse-fg: #0f0f10;
+  --reverse-bg: #c5c8c6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --fg: #c5c8c6;
+    --fg-dim: #767676;
+    --bg: #0f0f10;
+    --panel: #17171a;
+    --code-bg: #1a1611;
+    --accent: #a8cc8c;
+    --accent-alt: #e5c07b;
+    --border: #4c4c4c;
+    --reverse-fg: #0f0f10;
+    --reverse-bg: #c5c8c6;
+  }
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+}
+body {
+  font-family:
+    ui-monospace, "JetBrains Mono", "IBM Plex Mono", Menlo, Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  /* prevent mobile browsers from inflating font sizes on rotate / narrow
+     viewports (perceived as "zoomed in") */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* --- layout: flex-row, sidebar-left + content-right. ASCII and (on
+       post pages) the TOC live inside the SAME <aside class="sidebar">
+       and stack via natural block flow. The aside is sticky so it stays
+       visible while the reader scrolls the article. */
+.layout {
+  display: flex;
+  gap: 2ch;
+  align-items: flex-start;
+  max-width: calc(88ch + 24ch + 2ch);
+  margin: 3ch auto 4ch;
+  padding: 0 2ch;
+}
+.sidebar {
+  flex-shrink: 0;
+  /* 22ch, or wider when the ascii signature's longest line needs it: its
+     lines cannot wrap, so they set min-content; TOC entries still wrap */
+  width: min-content;
+  min-width: 22ch;
+  position: sticky;
+  top: 2rem;
+  align-self: flex-start;
+}
+.sidebar .ascii {
+  font-family: inherit;
+  font-size: 10px;
+  line-height: 1;
+  margin: 0 0 1em;
+  color: var(--fg-dim);
+  white-space: pre;
+  background: transparent;
+}
+.content { flex: 1; min-width: 0; }
+/* min-width: 0 lets main shrink below its content's intrinsic width
+   (e.g., a long code block or unbreakable inline token) so it never
+   pushes the layout past the viewport on narrow screens */
+main { max-width: 88ch; min-width: 0; }
+
+@media (max-width: 900px) {
+  /* stack the sidebar over the content and stretch children to the
+     container width. Default align-items: flex-start (from desktop)
+     lets children size to their own content, which was making .content
+     as wide as the widest <pre> line and pushing the article past the
+     viewport. */
+  .layout { flex-direction: column; gap: 1ch; align-items: stretch; }
+  .sidebar { position: static; width: auto; }
+  .sidebar .toc { display: none; } /* skip TOC on narrow viewports */
+  /* bump body up on phones — 14px monospace reads too small at
+     fit-to-screen next to minima's 16px sans. Keep desktop at 14px. */
+  body { font-size: 16px; }
+}
+
+/* --- typography ---------------------------------------------------- */
+a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+a:hover {
+  background: var(--reverse-bg);
+  color: var(--reverse-fg);
+  text-decoration: none;
+}
+a:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 1px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  margin: 2.2em 0 0.5em;
+  line-height: 1.3;
+}
+h1 { font-size: 1rem; color: var(--accent-alt); }
+h2 { font-size: 1rem; color: var(--fg); }
+h3, h4, h5, h6 { font-size: 1rem; color: var(--fg-dim); }
+/* no chevron on h2/h3 — the anchor-link `>` prefix already marks them */
+
+.header-anchor {
+  color: var(--fg-dim);
+  margin-right: 0.35em;
+  text-decoration: none;
+}
+.header-anchor:hover {
+  color: var(--accent);
+  background: transparent;
+}
+
+p { margin: 0.6em 0; }
+
+/* --- article frame: a plain box around the post --- */
+article {
+  position: relative;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  padding: 1.2em 2ch;
+  margin: 0 0 2em;
+  /* long inline code / URLs / hostnames would otherwise push the article
+     wider than a phone viewport and clip the frame's right edge */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
+}
+article header { margin-bottom: 1em; }
+
+/* keep content inside the frame — images and videos wider than the
+   article's content box would otherwise punch through the right side */
+main img, main video, main iframe {
+  max-width: 100%;
+  height: auto;
+}
+article h1 {
+  font-size: 1rem;
+  color: var(--accent-alt);
+  margin: 0;
+  padding: 0 0 0.2em;
+}
+article h1::before { content: "▲ "; color: var(--accent); }
+article .post-meta {
+  color: var(--fg-dim);
+  margin: 0;
+  font-size: 0.9em;
+}
+
+/* projects page: a figure above a project, clicking through to it */
+.project-hero { display: block; margin: 1em 0 0.5em; }
+.project-hero iframe { display: block; width: 100%; height: auto; border: 0; background: transparent; pointer-events: none; }
+/* a figure is not text: keep a:hover's reverse video off it */
+.project-hero:hover { background: transparent; }
+
+/* a page that sets layout_class "layout-wide" (projects) spans the screen */
+@media (min-width: 901px) {
+  .layout.layout-wide { max-width: none; padding: 0 6vw; }
+  .layout-wide main { max-width: none; flex: 1; }
+}
+
+/* projects page: projects side by side where there is room; heroes share
+   one short box, each figure sized to its height and centred, so names
+   line up and sit near the top of the screen */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 30ch), 1fr));
+  gap: 3ch;
+  align-items: start;
+}
+.project-grid .project-hero {
+  aspect-ratio: 2 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.project-grid .project-hero iframe {
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+}
+
+/* --- tag chips (mirrors the minima look; palette follows TUI) ------- */
+.tag-list {
+  margin: 2rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+.tag-chip {
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--fg-dim);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px 10px;
+  text-decoration: none;
+  line-height: 1.5;
+}
+.tag-chip::before {
+  content: "#";
+  opacity: 0.55;
+  margin-right: 1px;
+}
+.tag-chip:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  text-decoration: none;
+  background: transparent;
+}
+.tag-chip:visited {
+  color: var(--fg-dim);
+}
+.tag-chip:visited:hover {
+  color: var(--accent);
+}
+
+/* --- lists -------------------------------------------------------- */
+ul, ol {
+  padding-left: 2ch;
+  margin: 0.6em 0;
+}
+ul { list-style: none; padding-left: 3ch; }
+ul li { position: relative; }
+ul li::before {
+  content: "•";
+  position: absolute;
+  left: -2ch;
+  color: var(--fg-dim);
+}
+ol li { margin: 0.2em 0; }
+
+/* --- blockquote as mail-quote (│ prefix, dim italic) -------------- */
+blockquote {
+  color: var(--fg-dim);
+  border-left: 2px solid var(--accent);
+  margin: 1em 0;
+  padding: 0.1em 1ch;
+}
+blockquote > :last-child { margin-bottom: 0; }
+
+/* --- addendum: dated extension appended after original publish date --- */
+.addendum {
+  position: relative;
+  margin: 2.4em 0 1em;
+  padding: 1.2em 1.5ch 0.9em;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--accent-alt);
+}
+.addendum::before {
+  content: "┌── added ──";
+  position: absolute;
+  top: -0.6em;
+  left: 1.5ch;
+  padding: 0 0.6ch;
+  background: var(--bg);
+  color: var(--accent-alt);
+  font-size: 0.85em;
+  letter-spacing: 0.02em;
+}
+.addendum > :first-child { margin-top: 0; }
+.addendum > :last-child { margin-bottom: 0; }
+.addendum h2,
+.addendum h3 { margin-top: 0.6em; }
+.addendum-eyebrow {
+  color: var(--accent-alt);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.85em;
+  margin: 0 0 0.9em;
+}
+.addendum-eyebrow::before { content: "» "; }
+
+/* --- code / pre — elevated card, distinct from --panel ------------- */
+pre, code {
+  font-family: inherit;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  color: var(--fg);
+}
+code { padding: 0 0.4ch; font-size: 0.95em; }
+pre {
+  padding: 0.8em 1ch;
+  overflow-x: auto;
+  font-size: 0.92em;
+  border-radius: 0;
+}
+pre code { background: transparent; border: 0; padding: 0; }
+
+/* When Zola class-mode highlighting is on, giallo paints .z-code with
+   a hard #FFFFFF (light) / #24292E (dark) background. Push it to the
+   same --panel used above so both cases match. */
+:root[data-skin="tui"] .z-code {
+  background-color: var(--code-bg);
+  color: var(--fg);
+}
+:root[data-skin="tui"] .z-hl {
+  background-color: var(--panel);
+}
+
+/* --- hr as dashed ASCII rule --------------------------------------- */
+hr {
+  border: none;
+  border-top: 1px dashed var(--border);
+  margin: 2em 0;
+}
+
+/* --- post-list as `ls -la` output --------------------------------- */
+.post-list {
+  padding-left: 0;
+  list-style: none;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin: 1em 0;
+}
+.post-list li {
+  padding: 0.15em 1ch;
+  line-height: 1.6;
+  position: static; /* neutralise the position:relative from `ul li` */
+}
+.post-list li::before {
+  content: "-rw-r--r--";
+  display: inline-block;
+  width: 11ch;
+  color: var(--fg-dim);
+  position: static; /* neutralise the absolute+-2ch from `ul li::before` */
+  left: auto;
+}
+.post-list li::marker { content: ""; }
+.post-list li:hover {
+  background: var(--reverse-bg);
+  color: var(--reverse-fg);
+}
+.post-list li:hover a { color: var(--reverse-fg); }
+.post-list li:hover::before { color: var(--reverse-fg); }
+.post-list time {
+  display: inline-block;
+  width: 11ch;
+  color: var(--accent-alt);
+  font-variant-numeric: tabular-nums;
+  margin-right: 0;
+}
+.post-list a {
+  text-decoration: none;
+  color: var(--fg);
+}
+.post-list a:hover { background: transparent; }
+
+/* --- doc-grid: a project's undated pages as man-page index cards -- */
+.doc-grid {
+  list-style: none;
+  padding-left: 0;
+  margin: 1em 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(30ch, 1fr));
+  gap: 1ch;
+}
+.doc-grid li { position: static; margin: 0; }
+.doc-grid li::before { content: none; }
+.doc-grid a {
+  display: block;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0.6em 1.5ch;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--fg);
+  text-decoration: none;
+}
+.doc-grid .doc-title {
+  display: block;
+  color: var(--accent-alt);
+  font-weight: 700;
+}
+.doc-grid .doc-title::before { content: "§ "; color: var(--accent); }
+.doc-grid .doc-desc {
+  display: block;
+  margin-top: 0.3em;
+  color: var(--fg-dim);
+}
+.doc-grid a:hover { background: var(--reverse-bg); }
+.doc-grid a:hover .doc-title,
+.doc-grid a:hover .doc-title::before,
+.doc-grid a:hover .doc-desc { color: var(--reverse-fg); }
+
+/* --- whoami block (homepage ASCII) --------------------------------- */
+pre.whoami {
+  font-family: inherit;
+  font-size: inherit;
+  background: transparent;
+  color: var(--fg);
+  padding: 0;
+  border: 0;
+  margin: 0 0 1.4em;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* --- top-right controls (skin + theme toggle) --------------------- */
+.controls {
+  position: fixed;
+  top: 0.5ch;
+  right: 0.5ch;
+  display: flex;
+  gap: 0.4ch;
+  z-index: 101;
+}
+.skin-toggle, .theme-toggle {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--fg-dim);
+  cursor: pointer;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.skin-toggle:hover, .theme-toggle:hover {
+  background: var(--reverse-bg);
+  color: var(--reverse-fg);
+  border-color: var(--accent);
+}
+.skin-toggle svg, .theme-toggle svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+/* Both SVG icons are hidden by default in TUI; use one arbitrarily so
+   the button isn't empty. */
+.skin-toggle .icon-terminal { display: none; }
+.skin-toggle .icon-type { display: block; }
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle .icon-moon { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .theme-toggle .icon-sun { display: block; }
+  :root:not([data-theme]) .theme-toggle .icon-moon { display: none; }
+}
+
+/* --- footer ------------------------------------------------------- */
+.site-footer {
+  margin: 3em 0 1em;
+  padding-top: 1em;
+  border-top: 1px dashed var(--border);
+  text-align: center;
+}
+.site-footer .footer-line {
+  font-size: 12px;
+  color: var(--fg-dim);
+  margin: 0 0 0.5em;
+}
+.site-footer .footer-icons {
+  display: flex;
+  justify-content: center;
+  gap: 0.5ch;
+  margin: 0;
+}
+.site-footer .footer-icons a {
+  color: var(--fg-dim);
+  text-decoration: none;
+  padding: 0.2em 0.4em;
+  border: 1px solid transparent;
+}
+.site-footer .footer-icons a:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: transparent;
+}
+.site-footer .footer-icons svg { width: 14px; height: 14px; display: block; }
+
+/* --- xkcd figure -------------------------------------------------- */
+figure.xkcd {
+  margin: 1.5em 0;
+  padding: 0.6em 1ch;
+  border: 1px solid var(--border);
+  text-align: center;
+  background: var(--panel);
+}
+
+/* --- visualizer component: collapsible iframe embed ---------------- */
+details.viz {
+  margin: 1.5em 0;
+  border: 1px solid var(--border);
+  background: var(--panel);
+}
+details.viz > summary {
+  cursor: pointer;
+  padding: 0.3em 1ch;
+  color: var(--accent);
+}
+details.viz[open] > summary {
+  border-bottom: 1px solid var(--border);
+}
+details.viz iframe {
+  display: block;
+}
+
+/* --- on-this-page TOC (nested inside .sidebar, below the ASCII) ---- */
+.toc {
+  font-size: 12px;
+  color: var(--fg-dim);
+}
+.toc-title {
+  margin: 0 0 0.6em;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 10px;
+}
+.toc-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  border-left: 1px solid var(--border);
+}
+.toc-list li { margin: 0; padding-left: 0; }
+.toc-list li::before { content: none; } /* override the • bullet */
+.toc-list ol {
+  list-style: none;
+  padding-left: 0.9rem;
+  margin: 0;
+}
+.toc-list a {
+  display: block;
+  padding: 3px 10px;
+  color: var(--fg-dim);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  margin-left: -1px;
+  line-height: 1.35;
+  background: transparent;
+}
+.toc-list a:hover {
+  color: var(--fg);
+  background: transparent;
+}
+.toc-list a.active {
+  color: var(--accent-alt);
+  border-left-color: var(--accent-alt);
+  background: transparent;
+}
