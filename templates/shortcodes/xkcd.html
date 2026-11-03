@@ -1,0 +1,21 @@
+{#-
+  xkcd shortcode — embed an xkcd comic with attribution.
+  Args:
+    num    (required) — comic number, used for link + image filename
+    title  (optional) — the comic's title
+    alt    (optional) — alt / hover text
+  Image is expected at /img/xkcd/{num}.png in your `static/`.
+-#}
+{%- set title = title | default(value="xkcd #" ~ num) -%}
+{%- set alt = alt | default(value="") -%}
+<figure class="xkcd">
+  <a href="https://xkcd.com/{{ num }}/" rel="noopener">
+    <img src="{{ get_url(path='img/xkcd/' ~ num ~ '.png') }}" alt="{{ alt }}" title="{{ alt }}" loading="lazy">
+  </a>
+  <figcaption>
+    <a href="https://xkcd.com/{{ num }}/">xkcd #{{ num }} &mdash; {{ title }}</a>
+    by <a href="https://xkcd.com/">Randall Munroe</a>,
+    <a href="https://creativecommons.org/licenses/by-nc/2.5/" rel="noopener">CC BY-NC 2.5</a>
+    {%- if alt %}<em>&ldquo;{{ alt }}&rdquo;</em>{%- endif %}
+  </figcaption>
+</figure>

@@ -1,0 +1,40 @@
+{#- A project's home, laid out like a post: the section's title and
+    description as the header, its content, and its table of contents in
+    the sidebar; then one list per subsection. A subsection of dated pages
+    (posts) is a dated list; one of undated pages (docs) is a grid of cards
+    with each page's description. Use with
+    template = "project.html" in a section's _index.md. -#}
+{% extends "base.html" %}
+{% block title %}{{ section.title }} · {{ config.title }}{% endblock %}
+{% block description %}{% if section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}{% endblock %}
+{% block sidebar_extras %}{% set toc = section.toc %}{% include "toc.html" %}{% endblock %}
+{% block content %}
+<article>
+<header>
+<h1>{{ section.title }}</h1>
+{% if section.description %}<p class="post-meta">{{ section.description }}</p>{% endif %}
+</header>
+{{ section.content | safe }}
+</article>
+
+{% for sub_path in section.subsections %}
+{% set sub = get_section(path=sub_path) %}
+{% if sub.pages | length > 0 %}
+<h2>{{ sub.title | lower }}</h2>
+{% set first_page = sub.pages | first %}
+{% if first_page.date %}
+<ul class="post-list">
+{% for p in sub.pages %}
+<li>{% if p.date %}<time datetime="{{ p.date }}">{{ p.date | date(format="%Y-%m-%d") }}</time> · {% endif %}<a href="{{ p.permalink | safe }}">{{ p.title }}</a>{% if p.description %} <span class="post-meta">— {{ p.description }}</span>{% endif %}</li>
+{% endfor %}
+</ul>
+{% else %}
+<ul class="doc-grid">
+{% for p in sub.pages %}
+<li><a href="{{ p.permalink | safe }}"><span class="doc-title">{{ p.title }}</span>{% if p.description %}<span class="doc-desc">{{ p.description }}</span>{% endif %}</a></li>
+{% endfor %}
+</ul>
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endblock content %}

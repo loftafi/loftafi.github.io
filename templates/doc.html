@@ -1,0 +1,15 @@
+{#- An undated page such as product documentation: the TOC sidebar of
+    page.html without the date line, and a link back to its section. Use
+    with page_template = "doc.html" in the section's _index.md. -#}
+{% extends "page.html" %}
+{% block content %}
+<article>
+<header>
+<h1>{{ page.title }}</h1>
+{% if page.description %}<p class="post-meta">{{ page.description }}</p>{% endif %}
+</header>
+{{ page.content | safe }}
+</article>
+{% set parent = get_section(path=page.ancestors | last) %}
+<p><a href="{{ parent.permalink | safe }}">← {{ parent.title | lower }}</a>{% if page.ancestors | length > 1 %}{% set top = get_section(path=page.ancestors | nth(n=page.ancestors | length - 2)) %} · <a href="{{ top.permalink | safe }}">{{ top.title | lower }}</a>{% endif %}</p>
+{% endblock content %}

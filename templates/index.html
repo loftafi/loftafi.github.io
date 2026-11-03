@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+{{ section.content | safe }}
+
+{% set posts = get_section(path="posts/_index.md") %}
+{% if posts.pages | length > 0 %}
+<h2>Posts</h2>
+{% set limit = config.extra.homepage_post_limit | default(value=0) %}
+{% if limit > 0 and posts.pages | length > limit %}
+  {% set shown = posts.pages[:limit] %}
+{% else %}
+  {% set shown = posts.pages %}
+{% endif %}
+{% set remaining = posts.pages | length - shown | length %}
+<ul class="post-list">
+{% for page in shown %}
+<li><time datetime="{{ page.date }}">{{ page.date | date(format="%Y-%m-%d") }}</time> · <a href="{{ page.permalink | safe }}">{{ page.title }}</a></li>
+{% endfor %}
+</ul>
+{% if remaining > 0 %}
+<p><a href="{{ get_url(path='posts/') }}">See All {{ posts.pages | length }} Posts →</a></p>
+{% else %}
+<p><a href="{{ get_url(path='posts/') }}">All Posts →</a></p>
+{% endif %}
+{% endif %}
+
+{% if config.extra.github or config.extra.linkedin or config.extra.email %}
+<h2>Connect</h2>
+<ul class="connect">
+{% if config.extra.github %}<li><strong>github</strong> · <a href="https://github.com/{{ config.extra.github }}" rel="me">{{ config.extra.github }}</a></li>{% endif %}
+{% if config.extra.linkedin %}<li><strong>linkedin</strong> · <a href="https://www.linkedin.com/in/{{ config.extra.linkedin }}" rel="me">{{ config.extra.linkedin }}</a></li>{% endif %}
+{% if config.extra.email %}<li><strong>email</strong> · <a href="mailto:{{ config.extra.email }}">{{ config.extra.email }}</a></li>{% endif %}
+</ul>
+{% endif %}
+{% endblock content %}

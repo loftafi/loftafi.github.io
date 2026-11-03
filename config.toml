@@ -1,0 +1,43 @@
+# Demo config — used when building this repo in isolation
+# (e.g. `zola serve` from inside the theme to preview).
+# When consumed as a theme, the *consumer's* config.toml wins.
+
+base_url = "https://loftafi.github.io"
+title = "loftafi"
+description = "Personal blog."
+default_language = "en"
+compile_sass = false
+generate_feeds = true
+feed_filenames = ["atom.xml"]
+build_search_index = false
+
+taxonomies = [
+    { name = "tags", paginate_by = 20, feed = true },
+]
+
+[markdown]
+smart_punctuation = false
+
+[markdown.highlighting]
+style = "class"
+light_theme = "github-light"
+dark_theme = "github-dark"
+
+
+[extra]
+author = "loftafi"
+github = "loftafi"
+linkedin = ""
+email = ""
+
+# Cap the front-page post list to the N most recent posts. When the
+# archive grows past N, a "see all M posts →" link appears below the
+# list. Leave unset (or 0) to show every post on the front page.
+# homepage_post_limit = 7
+# Optional multi-line ASCII shown as a quiet signature above the content.
+# Leave empty to omit the sidebar entirely.
+ascii_signature = """
+                       
+    ❯  loftafi         
+                       
+"""

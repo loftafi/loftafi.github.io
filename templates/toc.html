@@ -1,0 +1,20 @@
+{#- "on this page" for the sidebar. Set `toc` (page.toc or section.toc)
+    before including it. -#}
+{% if toc %}
+<nav class="toc" aria-label="On this page">
+<p class="toc-title">on this page</p>
+<ol class="toc-list">
+{% for h in toc %}
+<li><a href="#{{ h.id | safe }}">{{ h.title }}</a>
+{% if h.children %}
+<ol>
+{% for sub in h.children %}
+<li><a href="#{{ sub.id | safe }}">{{ sub.title }}</a></li>
+{% endfor %}
+</ol>
+{% endif %}
+</li>
+{% endfor %}
+</ol>
+</nav>
+{% endif %}

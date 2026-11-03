@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ taxonomy.name }} · {{ config.title }}{% endblock %}
+{% block content %}
+<h1>&gt; {{ taxonomy.name }}</h1>
+
+{% if terms | length == 0 %}
+<p class="post-empty">(no tags yet)</p>
+{% else %}
+<ul class="post-list">
+{% for term in terms %}
+<li><a href="{{ term.permalink | safe }}">{{ term.name }}</a> <span class="post-meta">({{ term.pages | length }})</span></li>
+{% endfor %}
+</ul>
+{% endif %}
+
+<p><a href="{{ get_url(path='') }}">← Back</a></p>
+{% endblock content %}

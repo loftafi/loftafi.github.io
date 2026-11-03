@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}{{ term.name }} · {{ taxonomy.name }} · {{ config.title }}{% endblock %}
+{% block content %}
+<h1>&gt; {{ taxonomy.name }} / {{ term.name }}</h1>
+
+{% if term.pages | length == 0 %}
+<p class="post-empty">(no posts)</p>
+{% else %}
+<ul class="post-list">
+{% for page in term.pages %}
+<li><time datetime="{{ page.date }}">{{ page.date | date(format="%Y-%m-%d") }}</time> · <a href="{{ page.permalink | safe }}">{{ page.title }}</a></li>
+{% endfor %}
+</ul>
+{% endif %}
+
+<p><a href="{{ get_url(path=taxonomy.name ~ '/') }}">← all {{ taxonomy.name }}</a> · <a href="{{ get_url(path='') }}">home</a></p>
+{% endblock content %}

@@ -1,0 +1,34 @@
+{#- A list of projects from the section's front matter, so local projects
+    and ones with their own sites sit side by side:
+
+      [[extra.projects]]
+      name = "agd"
+      tagline = "org-agenda for terminals and coding agents"
+      description = "A sentence or two."
+      url = "projects/agd/"            # site-relative, or a full https:// URL
+      links = [{ name = "source", url = "https://github.com/…" }]
+      hero = { src = "/visualizers/agd.html", title = "…", ratio = "680 / 397" }
+
+    `hero` is optional: a page shown above the name, as a picture that
+    links to the project. Projects sit side by side where there is room.
+-#}
+{% extends "base.html" %}
+{% block title %}{{ section.title }} · {{ config.title }}{% endblock %}
+{#- the cards use the whole width on desktop -#}
+{% block layout_class %} layout-wide{% endblock %}
+{% block content %}
+<h1>{{ section.title  }}</h1>
+{{ section.content | safe }}
+<div class="project-grid">
+{% for project in section.extra.projects | default(value=[]) %}
+{% if "://" in project.url %}{% set href = project.url %}{% else %}{% set href = get_url(path=project.url) %}{% endif %}
+<section class="project">
+{% if project.hero %}<a class="project-hero" href="{{ href | safe }}" tabindex="-1" aria-hidden="true"><iframe src="{{ project.hero.src }}" title="{{ project.hero.title }}" tabindex="-1" loading="lazy" style="aspect-ratio: {{ project.hero.ratio }}"></iframe></a>
+{% endif %}<h2><a href="{{ href | safe }}">{{ project.name }}</a>{% if project.tagline %} <span class="post-meta">— {{ project.tagline }}</span>{% endif %}</h2>
+{% if project.description %}<p>{{ project.description }}</p>{% endif %}
+{% if project.links %}<p class="post-meta">{% for link in project.links %}<a href="{{ link.url | safe }}">{{ link.name }}</a>{% if not loop.last %} · {% endif %}{% endfor %}</p>{% endif %}
+</section>
+{% endfor %}
+</div>
+<p><a href="{{ get_url(path='') }}">← home</a></p>
+{% endblock content %}
