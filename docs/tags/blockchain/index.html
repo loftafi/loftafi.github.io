@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>blockchain · tags · loftafi</title>
+<meta name="description" content="Personal blog.">
+<meta name="author" content="loftafi">
+<link rel="icon" type="image/svg+xml" href="https://loftafi.github.io/favicon.svg">
+<link rel="icon" type="image/x-icon" href="https://loftafi.github.io/favicon.ico">
+<script>
+/* Stylesheet URLs include the site's base path, so the theme also works
+   when the site is served from a sub-path such as /project/. */
+var STYLE = 'https://loftafi.github.io/style.css';
+var STYLE_TUI = 'https://loftafi.github.io/style-tui.css';
+/* Set data-theme + data-skin BEFORE the stylesheet loads, so the
+   correct sheet ships on first paint and there's no flash. Also
+   honours ?theme=…&skin=… as a one-shot override (used by the
+   screenshots.sh script and for sharing preview links). */
+(function(){
+  try {
+    var qs = new URLSearchParams(location.search);
+    var t = qs.get('theme') || localStorage.getItem('theme');
+    if (t==='dark'||t==='light') document.documentElement.setAttribute('data-theme', t);
+    var s = qs.get('skin') || localStorage.getItem('skin');
+    if (s==='tui') document.documentElement.setAttribute('data-skin', 'tui');
+    var href = (s==='tui') ? STYLE_TUI : STYLE;
+    var link = document.createElement('link');
+    link.rel = 'stylesheet'; link.id = 'site-stylesheet'; link.href = href;
+    document.head.appendChild(link);
+  } catch(e) {
+    document.write('<link rel="stylesheet" id="site-stylesheet" href="' + STYLE + '">');
+  }
+})();
+</script>
+<link rel="alternate" type="application/atom+xml" title="loftafi" href="https://loftafi.github.io/atom.xml">
+<meta name="color-scheme" content="light dark">
+
+<link rel="stylesheet" id="syntax-light" href="https://loftafi.github.io/giallo-light.css" media="(prefers-color-scheme: light)">
+<link rel="stylesheet" id="syntax-dark" href="https://loftafi.github.io/giallo-dark.css" media="(prefers-color-scheme: dark)">
+
+
+</head>
+<body>
+<div class="controls">
+  <button class="skin-toggle" type="button" aria-label="Toggle typography / TUI skin" title="Toggle skin">
+    <svg class="icon-terminal" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+    <svg class="icon-type" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+  </button>
+  <button class="theme-toggle" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">
+    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</div>
+<div class="layout">
+
+
+<aside class="sidebar">
+<pre class="ascii" aria-hidden="true">
+                       
+    ❯  loftafi         
+                       
+
+</pre>
+
+</aside>
+
+
+<div class="content">
+<main>
+
+<h1>&gt; tags / blockchain</h1>
+
+
+<ul class="post-list">
+
+<li><time datetime="2026-11-03">2026-11-03</time> · <a href="https://loftafi.github.io/posts/blockchain-in-zig/">Blockchain in Zig</a></li>
+
+</ul>
+
+
+<p><a href="https://loftafi.github.io/tags">← all tags</a> · <a href="https://loftafi.github.io">home</a></p>
+
+</main>
+<footer class="site-footer" role="contentinfo">
+<p class="footer-line">©2026 loftafi</p>
+<p class="footer-icons">
+<a href="https://github.com/loftafi" rel="noopener me" aria-label="GitHub" title="GitHub">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+</a>
+
+<a href="https://loftafi.github.io/atom.xml" aria-label="RSS feed" title="RSS / Atom feed">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg>
+</a>
+
+</p>
+</footer>
+</div>
+</div>
+<script>
+/* skin toggle: flips between the minima and tui stylesheets */
+(function(){
+  var btn = document.querySelector('.skin-toggle');
+  if (!btn) return;
+  btn.addEventListener('click', function(){
+    var cur = document.documentElement.getAttribute('data-skin') === 'tui' ? 'tui' : 'minima';
+    var next = cur === 'tui' ? 'minima' : 'tui';
+    if (next === 'tui') document.documentElement.setAttribute('data-skin', 'tui');
+    else document.documentElement.removeAttribute('data-skin');
+    var link = document.getElementById('site-stylesheet');
+    if (link) link.setAttribute('href', next === 'tui' ? STYLE_TUI : STYLE);
+    try { localStorage.setItem('skin', next); } catch(e){}
+  });
+})();
+/* keep syntax-highlight CSS in step with the active theme. Both files
+   are loaded; we toggle their `media` so only one is "active" at a
+   time. When no explicit theme is set, we hand back to prefers-color-
+   scheme. */
+function syncSyntaxTheme(){
+  var t = document.documentElement.getAttribute('data-theme');
+  var light = document.getElementById('syntax-light');
+  var dark  = document.getElementById('syntax-dark');
+  if (!light || !dark) return;
+  if (t === 'dark')        { light.media = 'not all';                       dark.media  = 'all'; }
+  else if (t === 'light')  { light.media = 'all';                           dark.media  = 'not all'; }
+  else                     { light.media = '(prefers-color-scheme: light)'; dark.media  = '(prefers-color-scheme: dark)'; }
+}
+syncSyntaxTheme();
+
+/* theme toggle (light <-> dark) */
+(function(){
+  var btn = document.querySelector('.theme-toggle');
+  if (!btn) return;
+  btn.addEventListener('click', function(){
+    var cur = document.documentElement.getAttribute('data-theme');
+    var sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var effective = cur || (sysDark ? 'dark' : 'light');
+    var next = effective === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch(e){}
+    syncSyntaxTheme();
+  });
+})();
+
+/* TOC scroll-spy: highlights the TOC link whose target heading is
+   currently closest to the top of the viewport. No-op when there's no
+   TOC on the page. */
+(function(){
+  var links = document.querySelectorAll('.toc-list a[href^="#"]');
+  if (!links.length) return;
+  var targets = [];
+  for (var i = 0; i < links.length; i++) {
+    var id = decodeURIComponent(links[i].getAttribute('href').slice(1));
+    var el = document.getElementById(id);
+    if (el) targets.push({ el: el, link: links[i] });
+  }
+  if (!targets.length) return;
+  var offset = 80;
+  function sync() {
+    var doc = document.documentElement;
+    var atBottom = window.scrollY + window.innerHeight >= doc.scrollHeight - 2;
+    var current;
+    if (atBottom) {
+      current = targets[targets.length - 1];
+    } else {
+      var y = window.scrollY + offset;
+      current = targets[0];
+      for (var i = 0; i < targets.length; i++) {
+        if (targets[i].el.offsetTop <= y) current = targets[i];
+      }
+    }
+    for (var j = 0; j < targets.length; j++) {
+      targets[j].link.classList.toggle('active', targets[j] === current);
+    }
+  }
+  sync();
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if (!ticking) {
+      window.requestAnimationFrame(function(){ sync(); ticking = false; });
+      ticking = true;
+    }
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,663 @@
+/* ---------------------------------------------------------------------
+   style.css — primary stylesheet (Minima-flavoured).
+   System sans-serif, ~740px column, blue links, matched light/dark.
+   Runtime toggle in the top-right flips this file with style-tui.css.
+   --------------------------------------------------------------------- */
+
+:root {
+  --fg: #111;
+  --fg-dim: #828282;
+  --bg: #fdfdfd;
+  --link: #2a7ae2;
+  --link-visited: #1756a9;
+  --rule: #e8e8e8;
+  --code-bg: #eef;
+  --figure-bg: #fafafa;
+}
+
+:root[data-theme="dark"] {
+  --fg: #d8d8d8;
+  --fg-dim: #8a8a8a;
+  --bg: #121212;
+  --link: #6cb6ff;
+  --link-visited: #b196ff;
+  --rule: #2a2a2a;
+  --code-bg: #1e2030;
+  --figure-bg: #1a1a1a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --fg: #d8d8d8;
+    --fg-dim: #8a8a8a;
+    --bg: #121212;
+    --link: #6cb6ff;
+    --link-visited: #b196ff;
+    --rule: #2a2a2a;
+    --code-bg: #1e2030;
+    --figure-bg: #1a1a1a;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+body {
+  font:
+    400 16px/1.5 -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol";
+  -webkit-font-feature-settings: "kern" 1;
+  font-feature-settings: "kern" 1;
+  font-kerning: normal;
+  /* stop mobile browsers (Safari/Chromium/Firefox) from bumping up font
+     sizes on rotate / narrow viewports, which reads as "zoomed in" */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* sticky footer: body fills viewport, layout/content/main grow so the
+     footer pins to the bottom on short pages */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* layout: single centred column. Flex-column so child .content can grow
+   and push the site footer to the viewport bottom. */
+.layout {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: 740px;
+  margin: 3rem auto 2rem;
+  padding: 0 30px;
+}
+
+@media (max-width: 800px) {
+  .layout {
+    padding: 0 15px;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  /* allow the flex item to shrink below its content's natural width so
+     media rules (max-width: 100%) actually cap wide images on mobile */
+  min-width: 0;
+}
+main {
+  max-width: none;
+  flex: 1 0 auto;
+  min-width: 0;
+}
+
+/* the ASCII sidebar — stacked above the content on all viewports
+   (flex-direction: column on .layout + sidebar first in DOM). Quiet
+   centred signature; same look on mobile and desktop. */
+.sidebar {
+  width: auto;
+  margin: 3rem 0 1rem;
+  opacity: 0.6;
+  text-align: center;
+}
+.sidebar .ascii {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 9px;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--fg-dim);
+  white-space: pre;
+}
+/* To hide the ASCII signature entirely, uncomment:
+   .sidebar { display: none; } */
+
+/* type scale — Minima keeps headings at weight 400 (regular).
+   That's the defining "quiet" trick. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 400;
+  margin: 1.6rem 0 0.6rem;
+  line-height: 1.25;
+}
+h1 {
+  font-size: 32px;
+}
+h2 {
+  font-size: 26px;
+  margin-top: 2rem;
+}
+h3 {
+  font-size: 20px;
+}
+h4 {
+  font-size: 18px;
+}
+h5,
+h6 {
+  font-size: 16px;
+}
+
+p,
+ul,
+ol,
+blockquote,
+pre,
+figure,
+dl {
+  margin: 0 0 15px;
+}
+
+/* links — Minima blue, no underline, underline on hover */
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+a:visited {
+  color: var(--link-visited);
+}
+a:hover {
+  color: var(--fg);
+  text-decoration: underline;
+}
+
+/* lists — system bullets, no terminal arrows */
+ul,
+ol {
+  padding-left: 30px;
+  margin-left: 0;
+}
+ul li,
+ol li {
+  padding-left: 0;
+  text-indent: 0;
+  margin: 0.2rem 0;
+}
+ul li::before {
+  content: none;
+}
+
+/* whoami block on the homepage was ASCII inside a <pre>; keep it monospace
+   but unobtrusive */
+pre.whoami {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  background: transparent;
+  color: var(--fg);
+  white-space: pre;
+  overflow-x: auto;
+  border: none;
+  border-radius: 0;
+}
+
+/* code — Minima's distinctive pale-blue background */
+pre,
+code {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 14px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  background-color: var(--code-bg);
+}
+code {
+  padding: 1px 5px;
+}
+pre {
+  padding: 10px 14px;
+  overflow-x: auto;
+  line-height: 1.45;
+}
+pre code {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+/* blockquote — italic, larger, grey, left bar */
+blockquote {
+  color: var(--fg-dim);
+  border-left: 4px solid var(--rule);
+  padding-left: 15px;
+  font-size: 18px;
+  font-style: italic;
+  letter-spacing: -0.5px;
+}
+blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+/* horizontal rule */
+hr {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin: 2rem 0;
+}
+
+/* post list (section.html) */
+.post-list {
+  padding-left: 0;
+  list-style: none;
+}
+.post-list li {
+  padding-left: 0;
+  text-indent: 0;
+  margin: 0.4rem 0;
+}
+.post-list li::before {
+  content: "";
+}
+.post-list time {
+  color: var(--fg-dim);
+  margin-right: 1ch;
+  font-variant-numeric: tabular-nums;
+}
+
+/* a project's undated pages (docs) as cards, unlike the dated post list */
+.doc-grid {
+  list-style: none;
+  padding-left: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: 0.75rem;
+}
+.doc-grid li { margin: 0; }
+.doc-grid a {
+  display: block;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  color: var(--fg);
+  text-decoration: none;
+}
+.doc-grid a:hover { border-color: var(--link); }
+.doc-grid .doc-title { display: block; font-weight: 600; }
+.doc-grid a:hover .doc-title { color: var(--link); }
+.doc-grid .doc-desc {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--fg-dim);
+  font-size: 14px;
+}
+
+.post-empty {
+  color: var(--fg-dim);
+}
+.post-meta {
+  color: var(--fg-dim);
+  font-size: 14px;
+}
+
+/* projects page: a figure above a project, clicking through to it */
+.project-hero { display: block; margin: 2rem 0 0.5rem; }
+.project-hero iframe { display: block; width: 100%; height: auto; border: 0; background: transparent; pointer-events: none; }
+
+/* a page that sets layout_class "layout-wide" (projects) spans the screen */
+@media (min-width: 900px) {
+  .layout.layout-wide { max-width: none; padding: 0 6vw; margin-top: 1.5rem; }
+  .layout-wide .sidebar { margin: 0 0 1rem; }
+  .layout-wide main > h1 { margin: 0.5rem 0 0; }
+  .layout-wide .project-hero { margin-top: 0.5rem; }
+}
+
+/* projects page: projects side by side where there is room; heroes share
+   one short box, each figure sized to its height and centred, so names
+   line up and sit near the top of the screen */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 2rem;
+  align-items: start;
+}
+.project-grid .project-hero {
+  aspect-ratio: 2 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.project-grid .project-hero iframe {
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+}
+
+/* page article header */
+article header {
+  margin-bottom: 1.5rem;
+}
+article h1 {
+  font-size: 32px;
+  margin-bottom: 0.4rem;
+  font-weight: 400;
+}
+
+/* shareable anchor prefix on headings — Zola inserts an <a> before each
+   heading when `insert_anchor_links = "left"`; our custom
+   templates/anchor-link.html emits `>` as the text. Style it to look like
+   the dim `> ` prefix we used to type into markdown by hand. */
+.header-anchor {
+  color: var(--fg-dim);
+  text-decoration: none;
+  margin-right: 0.35em;
+  font-weight: inherit;
+}
+.header-anchor:hover {
+  color: var(--link);
+}
+
+/* the on-this-page TOC lives inside .sidebar on the TUI skin. Hide it
+   everywhere on the primary Minima skin (desktop and mobile) so it
+   doesn't render at all. Selector is deliberately broad to survive any
+   future layout shuffle. */
+.sidebar .toc,
+nav.toc,
+.toc {
+  display: none !important;
+}
+
+/* media — never overflow the content column. Broad rule so it also
+   catches images on index / section / taxonomy pages, not just posts. */
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* xkcd figure — same structure, lighter chrome */
+figure.xkcd {
+  margin: 2rem 0;
+  padding: 1rem;
+  border: 1px solid var(--rule);
+  background: var(--figure-bg);
+  text-align: center;
+}
+/* xkcd comics are black-on-white grayscale; invert in dark mode so they
+   don't glow against a dark page */
+:root[data-theme="dark"] figure.xkcd img {
+  filter: invert(0.92) hue-rotate(180deg);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) figure.xkcd img {
+    filter: invert(0.92) hue-rotate(180deg);
+  }
+}
+figure.xkcd img {
+  max-width: 100%;
+  height: auto;
+  display: inline-block;
+}
+figure.xkcd figcaption {
+  margin-top: 0.75rem;
+  font-size: 13px;
+  color: var(--fg-dim);
+  line-height: 1.5;
+  text-align: left;
+}
+figure.xkcd figcaption em {
+  display: block;
+  margin-top: 0.4rem;
+  font-style: italic;
+  color: var(--fg-dim);
+}
+
+/* visualizer component — collapsible iframe embed */
+details.viz {
+  margin: 2rem 0;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--figure-bg);
+}
+details.viz > summary {
+  cursor: pointer;
+  padding: 0.6rem 1rem;
+  color: var(--link);
+}
+details.viz > summary:hover {
+  color: var(--fg);
+}
+details.viz[open] > summary {
+  border-bottom: 1px solid var(--rule);
+}
+details.viz iframe {
+  display: block;
+}
+
+/* site-wide footer — comment-style copyright line + icon links */
+.site-footer {
+  margin: 4rem 0 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--rule);
+  text-align: center;
+}
+.site-footer .footer-line {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 13px;
+  color: var(--fg-dim);
+  margin: 0 0 0.9rem;
+}
+.site-footer .footer-icons {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+.site-footer .footer-icons a {
+  color: var(--fg-dim);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+  border: 1px solid transparent;
+}
+.site-footer .footer-icons a:hover {
+  color: var(--link);
+  border-color: var(--rule);
+  text-decoration: none;
+}
+.site-footer .footer-icons a:visited {
+  color: var(--fg-dim);
+}
+.site-footer .footer-icons a:visited:hover {
+  color: var(--link);
+}
+.site-footer .footer-icons svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+/* tag chips on a post page — quiet monospace pills, link on hover */
+.tag-list {
+  margin: 2rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+}
+.tag-chip {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: var(--fg-dim);
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 2px 10px;
+  text-decoration: none;
+  line-height: 1.5;
+}
+.tag-chip::before {
+  content: "#";
+  opacity: 0.55;
+  margin-right: 1px;
+}
+.tag-chip:hover {
+  color: var(--link);
+  border-color: var(--link);
+  text-decoration: none;
+}
+.tag-chip:visited {
+  color: var(--fg-dim);
+}
+.tag-chip:visited:hover {
+  color: var(--link);
+}
+
+/* addendum — a section added to a post after its original publish date.
+   Wrap with: <div class="addendum"> ... </div>. Looks visibly distinct
+   from the surrounding article so a reader can tell it was added later. */
+.addendum {
+  margin: 3rem 0 1rem;
+  padding: 1.4rem 1.5rem 1.1rem;
+  background: var(--figure-bg);
+  border: 1px solid var(--rule);
+  border-left: 3px solid #c87a00;
+  border-radius: 0 8px 8px 0;
+}
+.addendum > :first-child {
+  margin-top: 0;
+}
+.addendum > :last-child {
+  margin-bottom: 0;
+}
+.addendum h2,
+.addendum h3 {
+  margin-top: 0.4rem;
+}
+.addendum-eyebrow {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #c87a00;
+  margin: 0 0 0.9rem;
+}
+:root[data-theme="dark"] .addendum {
+  border-left-color: #f4b740;
+}
+:root[data-theme="dark"] .addendum-eyebrow {
+  color: #f4b740;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .addendum {
+    border-left-color: #f4b740;
+  }
+  :root:not([data-theme]) .addendum-eyebrow {
+    color: #f4b740;
+  }
+}
+
+/* top-right controls: skin toggle + theme toggle, side by side */
+.controls {
+  position: fixed;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: flex;
+  gap: 0.4rem;
+  z-index: 10;
+}
+.skin-toggle,
+.theme-toggle {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--fg-dim);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+}
+.skin-toggle:hover,
+.theme-toggle:hover {
+  color: var(--fg);
+  border-color: var(--fg-dim);
+}
+.skin-toggle svg,
+.theme-toggle svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+/* skin toggle (typography <-> tui). Default skin shows the terminal
+   glyph (click to switch to tui); tui skin shows the type glyph. */
+.skin-toggle .icon-type {
+  display: none;
+}
+.skin-toggle .icon-terminal {
+  display: block;
+}
+:root[data-skin="tui"] .skin-toggle .icon-terminal {
+  display: none;
+}
+:root[data-skin="tui"] .skin-toggle .icon-type {
+  display: block;
+}
+
+/* light mode shows moon (click to go dark) */
+.theme-toggle .icon-sun {
+  display: none;
+}
+.theme-toggle .icon-moon {
+  display: block;
+}
+
+/* dark mode (explicit) shows sun */
+:root[data-theme="dark"] .theme-toggle .icon-sun {
+  display: block;
+}
+:root[data-theme="dark"] .theme-toggle .icon-moon {
+  display: none;
+}
+
+/* dark mode (system, no explicit choice) shows sun too */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .theme-toggle .icon-sun {
+    display: block;
+  }
+  :root:not([data-theme]) .theme-toggle .icon-moon {
+    display: none;
+  }
+}
+
+div.footnote-definition > p {
+  display:inline-block;
+}

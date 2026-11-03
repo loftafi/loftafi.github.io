@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title>loftafi - games</title>
+    <subtitle>Personal blog.</subtitle>
+    <link rel="self" type="application/atom+xml" href="https://loftafi.github.io/tags/games/atom.xml"/>
+    <link rel="alternate" type="text/html" href="https://loftafi.github.io"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2020-01-09T00:00:00+00:00</updated>
+    <id>https://loftafi.github.io/tags/games/atom.xml</id>
+    <entry xml:lang="en">
+        <title>How to reliably save game state</title>
+        <published>2020-01-09T00:00:00+00:00</published>
+        <updated>2020-01-09T00:00:00+00:00</updated>
+        
+        <author>
+          <name>Unknown</name>
+        </author>
+        
+        <link rel="alternate" type="text/html" href="https://loftafi.github.io/posts/save-game-state/"/>
+        <id>https://loftafi.github.io/posts/save-game-state/</id>
+        
+        <content type="html" xml:base="https://loftafi.github.io/posts/save-game-state/">&lt;h2 id=&quot;how-to-reliably-save-game-state&quot;&gt;How to reliably save game state?&lt;/h2&gt;
+&lt;p&gt;How do you safely and reliably save your game state? Create a function that
+&lt;code&gt;serialize&lt;/code&gt;s all game state into a text or binary format. This may include
+player scores, achievements, backpack contents, map location. Create
+another function to &lt;code&gt;deserialize&lt;/code&gt; from this text or binary format back
+into your game memory.&lt;/p&gt;
+&lt;pre class=&quot;giallo z-l-code z-d-code&quot; &gt;&lt;code data-lang=&quot;zig&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;pub&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; const&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt; GameState&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; struct&lt;/span&gt;&lt;span&gt; {&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;    pub&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; const&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt; save_filename&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;game.dat&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;    score&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; u64&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;    achievements&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt; ArrayList&lt;/span&gt;&lt;span&gt;(&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;Achievement&lt;/span&gt;&lt;span&gt;)&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;    //&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; Convert the game state to a data string.&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;    pub&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; fn&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt; serialize&lt;/span&gt;&lt;span&gt;(&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;state&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; *&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;GameState&lt;/span&gt;&lt;span&gt;) []&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;const&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; u8&lt;/span&gt;&lt;span&gt; { &lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span&gt; }&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;    //&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; Convert save file data back into game state.&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;    pub&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; fn&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt; deserialize&lt;/span&gt;&lt;span&gt;(&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;state&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; *&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;GameState&lt;/span&gt;&lt;span&gt;) []&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;const&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; u8&lt;/span&gt;&lt;span&gt; { &lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span&gt; }&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;    //&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; Save the data string to disk&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;    pub&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; fn&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt; save&lt;/span&gt;&lt;span&gt;(&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;state&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; *&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;const&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt; GameState&lt;/span&gt;&lt;span&gt;) &lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;void&lt;/span&gt;&lt;span&gt; { &lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span&gt; }&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The mistake people commonly make, is to overwrite the existing game file
+with the new data. The problem with this, if the write fails, you may
+end up with an empty or incomplete game state file.&lt;/p&gt;
+&lt;p&gt;First write the game state to a temporary file such as
+&lt;code&gt;game.json.202302050150&lt;/code&gt; and after writing succeeds, rename/move the
+temporary file into the place of the &lt;code&gt;game.json&lt;/code&gt; file.&lt;/p&gt;
+&lt;pre class=&quot;giallo z-l-code z-d-code&quot; &gt;&lt;code data-lang=&quot;zig&quot;&gt;&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;///&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; Save the game state&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;pub&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; fn&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt; save&lt;/span&gt;&lt;span&gt;(&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;state&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; *&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;const&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt; GameState&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt; gpa&lt;/span&gt;&lt;span&gt;:&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt; std&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;mem&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;Allocator&lt;/span&gt;&lt;span&gt;) &lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;void&lt;/span&gt;&lt;span&gt; {&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;    //&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; Add the current time to the save filename&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;    const&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt; temp_name&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; try&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt; std&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;fmt&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;allocPrint&lt;/span&gt;&lt;span&gt;(&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;gpa&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt; &amp;quot;&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;{s}.{d}&lt;/span&gt;&lt;span class=&quot;z-l-2 z-d-6&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span&gt; .&lt;/span&gt;&lt;span&gt;{&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;        save_filename&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;        std&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;time&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;milliTimestamp&lt;/span&gt;&lt;span&gt;()&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;    })&lt;/span&gt;&lt;span&gt;;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;    defer&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt; gpa&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;free&lt;/span&gt;&lt;span&gt;(&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;temp_name&lt;/span&gt;&lt;span&gt;)&lt;/span&gt;&lt;span&gt;;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;    //&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; Step 1: Write the game state to a temporary file.&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;    const&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt; data&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt; state&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;serialize&lt;/span&gt;&lt;span&gt;()&lt;/span&gt;&lt;span&gt;;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;    var&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt; file&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; try&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt; std&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;fs&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;cwd&lt;/span&gt;&lt;span&gt;()&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;createFile&lt;/span&gt;&lt;span&gt;(&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;temp_name&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span&gt; .&lt;/span&gt;&lt;span&gt;{})&lt;/span&gt;&lt;span&gt;;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;    defer&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt; file&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;close&lt;/span&gt;&lt;span&gt;()&lt;/span&gt;&lt;span&gt;;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;    _&lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt; =&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt; file&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;write&lt;/span&gt;&lt;span&gt;(&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;data&lt;/span&gt;&lt;span&gt;) &lt;/span&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;catch&lt;/span&gt;&lt;span&gt; {&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;        return&lt;/span&gt;&lt;span&gt;;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;    }&lt;/span&gt;&lt;span&gt;;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt;    //&lt;/span&gt;&lt;span class=&quot;z-l-5 z-d-3&quot;&gt; Step 2: move the temporary file onto the real file.&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span class=&quot;z-l-8 z-d-10&quot;&gt;    try&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt; std&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;fs&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;cwd&lt;/span&gt;&lt;span&gt;()&lt;/span&gt;&lt;span&gt;.&lt;/span&gt;&lt;span class=&quot;z-l-6 z-d-7&quot;&gt;rename&lt;/span&gt;&lt;span&gt;(&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt;temp_name&lt;/span&gt;&lt;span&gt;,&lt;/span&gt;&lt;span class=&quot;z-l-9 z-d-12&quot;&gt; save_filename&lt;/span&gt;&lt;span&gt;)&lt;/span&gt;&lt;span&gt;;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;span&gt;}&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;giallo-l&quot;&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;</content>
+        
+    </entry>
+</feed>

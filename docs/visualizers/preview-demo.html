@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Preview visualiser · zola-quiet</title>
+    <link rel="stylesheet" href="/visualizers/_shared/viz-tui.css" />
+    <style>
+      :root {
+        --bg: #fdfdfd;
+        --panel: #fafafa;
+        --line: #e8e8e8;
+        --text: #111;
+        --muted: #828282;
+        --mark: #2a7ae2;
+        --match: #2d8a45;
+        --danger: #c0392b;
+        --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        --disp:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+          Arial, sans-serif;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme]) {
+          --bg: #121212;
+          --panel: #1a1a1a;
+          --line: #2a2a2a;
+          --text: #d8d8d8;
+          --muted: #8a8a8a;
+          --mark: #6cb6ff;
+          --match: #5fd08a;
+          --danger: #e8736b;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg: #121212;
+        --panel: #1a1a1a;
+        --line: #2a2a2a;
+        --text: #d8d8d8;
+        --muted: #8a8a8a;
+        --mark: #6cb6ff;
+        --match: #5fd08a;
+        --danger: #e8736b;
+      }
+
+      * { box-sizing: border-box; }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        margin: 0;
+        padding: clamp(12px, 3vw, 20px);
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--disp);
+        line-height: 1.5;
+      }
+      .wrap {
+        max-width: 520px;
+        margin: 0 auto;
+      }
+      .eyebrow {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin: 0 0 0.4rem;
+      }
+      h1 {
+        font-size: 18px;
+        font-weight: 500;
+        margin: 0 0 0.75rem;
+      }
+      .desc {
+        color: var(--muted);
+        font-size: 13px;
+        margin: 0 0 1rem;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(16, 1fr);
+        gap: 3px;
+        padding: 8px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 4px;
+      }
+      .cell {
+        aspect-ratio: 1;
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 2px;
+        transition:
+          background 0.12s ease,
+          border-color 0.12s ease;
+      }
+      .cell.hit {
+        background: var(--mark);
+        border-color: var(--mark);
+      }
+      .cell.probe {
+        background: var(--match);
+        border-color: var(--match);
+      }
+      .row {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        margin-top: 0.75rem;
+        flex-wrap: wrap;
+      }
+      .btn {
+        padding: 5px 12px;
+        background: transparent;
+        border: 1px solid var(--line);
+        border-radius: 3px;
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--text);
+        cursor: pointer;
+      }
+      .btn:hover {
+        border-color: var(--mark);
+        color: var(--mark);
+      }
+      .status {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .status .hit { color: var(--mark); }
+      .status .probe { color: var(--match); }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <p class="eyebrow">demo · bloom filter</p>
+      <h1>Insert a word, watch bits light up</h1>
+      <p class="desc">
+        Three hashes per word. "Insert" marks the bits; "Query" tests
+        whether all three probed bits are already set. Colours track the
+        theme + skin toggles in the top-right.
+      </p>
+      <div class="grid" id="grid" aria-hidden="true"></div>
+      <div class="row">
+        <button class="btn" id="insert">insert "lorem"</button>
+        <button class="btn" id="query">query "ipsum"</button>
+        <button class="btn" id="reset">reset</button>
+        <span class="status" id="status">idle</span>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        const N = 64;
+        const grid = document.getElementById("grid");
+        const status = document.getElementById("status");
+        for (let i = 0; i < N; i++) {
+          const c = document.createElement("div");
+          c.className = "cell";
+          grid.appendChild(c);
+        }
+        const cells = [...grid.children];
+        const bits = new Uint8Array(N);
+        const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+        function hashes(word) {
+          let a = 5381,
+            b = 7919,
+            c = 2166136261 >>> 0;
+          for (let i = 0; i < word.length; i++) {
+            const k = word.charCodeAt(i);
+            a = ((a << 5) + a + k) >>> 0;
+            b = ((b * 33) ^ k) >>> 0;
+            c = ((c ^ k) * 16777619) >>> 0;
+          }
+          return [a % N, b % N, c % N];
+        }
+
+        function paint() {
+          for (let i = 0; i < N; i++) {
+            cells[i].classList.toggle("hit", bits[i] === 1);
+            cells[i].classList.remove("probe");
+          }
+        }
+        paint();
+
+        async function insert(word) {
+          status.innerHTML =
+            'inserting <span class="hit">"' + word + '"</span>…';
+          for (const i of hashes(word)) {
+            bits[i] = 1;
+            cells[i].classList.add("hit");
+            await sleep(180);
+          }
+          status.innerHTML =
+            'inserted <span class="hit">"' + word + '"</span>';
+        }
+
+        async function query(word) {
+          for (let i = 0; i < N; i++) cells[i].classList.remove("probe");
+          status.innerHTML = 'querying <span class="probe">"' + word + '"</span>…';
+          let hit = true;
+          for (const i of hashes(word)) {
+            cells[i].classList.add("probe");
+            await sleep(180);
+            if (bits[i] === 0) hit = false;
+          }
+          status.innerHTML = hit
+            ? 'probably <span class="probe">present</span>'
+            : "definitely absent";
+        }
+
+        document.getElementById("insert").addEventListener("click", () => insert("lorem"));
+        document.getElementById("query").addEventListener("click", () => query("ipsum"));
+        document.getElementById("reset").addEventListener("click", () => {
+          bits.fill(0);
+          paint();
+          status.textContent = "idle";
+        });
+      })();
+    </script>
+    <script
+      src="/visualizers/_shared/viz-frame.js"
+      data-height-msg="preview-demo-height"
+      data-size-selector=".wrap"
+      defer
+    ></script>
+  </body>
+</html>
